@@ -14,7 +14,7 @@ samplename = "S1_2";
 ParentFolder = cd(strcat("../",samplename,"/"));
 if(exist(strcat(samplename,".mat"),"file")>0)
     load(strcat(samplename,".mat"));
-    %     "load"
+    %     "load"  
 else
     %     "each load"
     

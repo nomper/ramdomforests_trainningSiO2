@@ -32,7 +32,7 @@ for f=replace(FL,".treated.mat","")
         %     );
         %     a.mapping_v_rt;
         LearningData=vertcat(LearningData,h);
-        ExpectData=vertcat(ExpectData, a.mapping_v_lt(:));
+        ExpectData=vertcat(ExpectData, a.mapping_p_lt_max(:));
     end
     LearningData(isnan(LearningData))=0;
     ExpectData(isnan(ExpectData))=0;
@@ -56,8 +56,7 @@ for f=replace(FL,".treated.mat","")
     
     importance=predictorImportance(Md)
     DefaultTree = fitrtree(L2,E2);
-    view(DefaultTree,'Mode','Graph')
-    return;
+%     view(DefaultTree,'Mode','Graph')
     t = templateTree('MaxNumSplits',1);
     Md_k = fitrensemble(L2, E2,'Learners',t,'CrossVal','on');
     % kflc = kfoldLoss(Md_k,'Mode','cumulative');
@@ -93,17 +92,18 @@ for f=replace(FL,".treated.mat","")
     pre2 = predict(Md,hi);
     [bx, by]=size(a.mapping_m_rt_max);
     pre2_map = reshape(pre2,bx,by).*area;
+    maxintensity=max([pre2_map(:);a.mapping_p_lt_max(:)])
     f1=figure(1);imagesc(pre2_map)
     colorbar;
     % f.CurrentAxes.CLim=[0 0.25];
-    f1.CurrentAxes.CLim=[0 0.35];
-    title("Prediction Vally Polarization")
+    f1.CurrentAxes.CLim=[0 maxintensity];
+    title("Prediction Max Inteisty")
     print(strcat(samplename,".predict.png"),"-dpng","-r250");
     %     f1.CurrentAxes.CLim=[0.15 0.35];
-    f2=figure(2);imagesc(a.mapping_v_lt)
+    f2=figure(2);imagesc(a.mapping_p_lt_max)
     colorbar;
-    f2.CurrentAxes.CLim=[0 0.35];
-    title("Experiment Vally Polarization")
+    f2.CurrentAxes.CLim=[0 maxintensity];
+    title("Experiment Max Inteisty")
     print(strcat(samplename,".experiment.png"),"-dpng","-r250");
     drawnow;
     % temp=input("1");
